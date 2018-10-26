@@ -9,11 +9,14 @@ file(GLOB planner_SRC
         include/runtime/*.h
         examples/travel.cpp
         examples/travel.h
+
 )
 
 include_directories(include)
 
-add_executable(hello_planner examples/hello_planner.cpp)
+add_executable(compiler app/main.compiler.cpp ${planner_SRC})
+
 add_executable(travel_planner examples/travel_main.cpp  ${planner_SRC})
+#add_executable(grasp_planner examples/grasp_main.cpp  ${planner_SRC})
 
 

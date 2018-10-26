@@ -56,19 +56,16 @@ workspace "derplanner"
         includedirs { "include" }
         links { "derplanner-compiler" }
 
-    project "tests"
-        kind "ConsoleApp"
-        files { "test/*.cpp", "test/unittestpp/src/*.cpp" }
-        includedirs { "test/unittestpp", "include", "source" }
-        links { "derplanner-compiler", "derplanner-runtime" }
-        filter { "system:linux or system:macosx" }
-            files { "test/unittestpp/src/Posix/*.cpp" }
-        filter { "action:vs*" }
-            files { "test/unittestpp/src/Win32/*.cpp" }
-
     project "domain-travel"
         kind "SharedLib"
         files { "examples/travel.cpp" }
+        includedirs { "include" }
+        filter { "action:vs*" }
+            defines { "PLNNR_DOMAIN_API=__declspec(dllexport)" }
+
+    project "domain-grasp"
+        kind "SharedLib"
+        files { "examples/grasp.cpp" }
         includedirs { "include" }
         filter { "action:vs*" }
             defines { "PLNNR_DOMAIN_API=__declspec(dllexport)" }
@@ -78,5 +75,13 @@ workspace "derplanner"
         files { "examples/travel.main.cpp" }
         includedirs { "include" }
         links { "derplanner-runtime", "domain-travel" }
+        filter { "action:vs*" }
+            defines { "PLNNR_DOMAIN_API=__declspec(dllimport)" }
+
+    project "example-grasp"
+        kind "ConsoleApp"
+        files { "examples/grasp_main.cpp" }
+        includedirs { "include" }
+        links { "derplanner-runtime", "domain-grasp" }
         filter { "action:vs*" }
             defines { "PLNNR_DOMAIN_API=__declspec(dllimport)" }
