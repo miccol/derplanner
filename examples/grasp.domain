@@ -3,12 +3,10 @@ domain grasp
 {
     fact
     {
-        grasped( id32)
-        high_confidence(id32)
-        low_confidence(id32)
-	in_front(id32)
-	not_in_front(id32)
-
+        grasped(id32) :size(1)
+        high_confidence(id32) :size(1)
+	in_front(id32) :size(1)
+	true(id32)
     }
 
     prim
@@ -20,27 +18,36 @@ domain grasp
 
     macro
     {
-        take(x) = grasped(x) & high_confidence(x)
+        take(x) = grasped(x)
+	observe(x) = high_confidence(x)
+	place(x) = in_front(x)
+
     }
 
     task root()
     {
-        case take(s) -> [ fetch(s, f) ]
+        case take(x) -> [ fetch(x) ]
     }
 
 
     task fetch(x)
     {
-        case high_confidence(x, y) -> [ pick!(x), grasped(x) ]
 
-        case low_confidence(x, y) -> [ observe(x), pick!(x), grasped(x) ]
+        case high_confidence(x) -> [ pick!(x) ]
+
+        case true(x) -> [ observe(x), fetch(x) ]
     }
 
     task observe(x)
     {
-        case in_front(x, y) -> [ look!(x, y), high_confidence(x) ]
+        case in_front(x) -> [ look!(x)]
 
-        case long_distance(x, y) -> [ pick!(x), place_in_front!(x), in_front(x), observe(x) ]
+        case true(x) -> [ pick!(x), place(x), observe(x) ]
     }
+
+	task place(x)
+	{
+		case true(x) -> [place_in_front!(x) ]
+	}
 
 }
